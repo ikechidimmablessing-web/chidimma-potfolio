@@ -6,12 +6,21 @@ function addStudent(student) {
 }
 
 function removeStudentById(id) {
-  const index = students.findIndex((student) => student.id === id);
-  return index === -1 ? null : students.splice(index, 1)[0];
+  for (let i = 0; i < students.length; i++) {
+    if (students[i].id === id) {
+      return students.splice(i, 1)[0];
+    }
+  }
+  return null;
 }
 
 function findStudentById(id) {
-  return students.find((student) => student.id === id) || null;
+  for (let i = 0; i < students.length; i++) {
+    if (students[i].id === id) {
+      return students[i];
+    }
+  }
+  return null;
 }
 
 function updateStudentScore(id, score) {
@@ -22,23 +31,42 @@ function updateStudentScore(id, score) {
 }
 
 function displayStudents() {
-  students.forEach((student) => {
+  for (let i = 0; i < students.length; i++) {
+    const student = students[i];
     const result = student.score >= 50 ? 'PASS' : 'FAIL';
     console.log(`${student.id}. ${student.name} - ${student.score} (${result})`);
-  });
+  }
 }
 
 function getClassAverage() {
   if (students.length === 0) return 0;
-  return students.reduce((total, student) => total + student.score, 0) / students.length;
+  let total = 0;
+  for (let i = 0; i < students.length; i++) {
+    total += students[i].score;
+  }
+  return total / students.length;
 }
 
 function getHighestScoringStudent() {
-  return students.reduce((highest, student) => student.score > highest.score ? student : highest, students[0]) || null;
+  if (students.length === 0) return null;
+  let highest = students[0];
+  for (let i = 1; i < students.length; i++) {
+    if (students[i].score > highest.score) {
+      highest = students[i];
+    }
+  }
+  return highest;
 }
 
 function getLowestScoringStudent() {
-  return students.reduce((lowest, student) => student.score < lowest.score ? student : lowest, students[0]) || null;
+  if (students.length === 0) return null;
+  let lowest = students[0];
+  for (let i = 1; i < students.length; i++) {
+    if (students[i].score < lowest.score) {
+      lowest = students[i];
+    }
+  }
+  return lowest;
 }
 
 addStudent({ id: 1, name: 'Daniel', age: 18, score: 72 });

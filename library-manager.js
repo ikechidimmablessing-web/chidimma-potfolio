@@ -6,39 +6,68 @@ function addBook(book) {
 }
 
 function removeBook(id) {
-  const index = books.findIndex((book) => book.id === id);
-  return index === -1 ? null : books.splice(index, 1)[0];
+  for (let i = 0; i < books.length; i++) {
+    if (books[i].id === id) {
+      return books.splice(i, 1)[0];
+    }
+  }
+  return null;
 }
 
 function borrowBook(id) {
-  const book = books.find((item) => item.id === id);
-  if (!book || !book.available) return null;
-  book.available = false;
-  return book;
+  for (let i = 0; i < books.length; i++) {
+    if (books[i].id === id && books[i].available) {
+      books[i].available = false;
+      return books[i];
+    }
+  }
+  return null;
 }
 
 function returnBook(id) {
-  const book = books.find((item) => item.id === id);
-  if (!book || book.available) return null;
-  book.available = true;
-  return book;
+  for (let i = 0; i < books.length; i++) {
+    if (books[i].id === id && !books[i].available) {
+      books[i].available = true;
+      return books[i];
+    }
+  }
+  return null;
 }
 
 function searchByTitle(title) {
   const searchTerm = title.toLowerCase();
-  return books.filter((book) => book.title.toLowerCase().includes(searchTerm));
+  const results = [];
+  for (let i = 0; i < books.length; i++) {
+    if (books[i].title.toLowerCase().includes(searchTerm)) {
+      results.push(books[i]);
+    }
+  }
+  return results;
 }
 
 function getAvailableBooks() {
-  return books.filter((book) => book.available);
+  const availableBooks = [];
+  for (let i = 0; i < books.length; i++) {
+    if (books[i].available) {
+      availableBooks.push(books[i]);
+    }
+  }
+  return availableBooks;
 }
 
 function displayAvailableBooks() {
-  getAvailableBooks().forEach((book) => console.log(`${book.title} by ${book.author}`));
+  const availableBooks = getAvailableBooks();
+  for (let i = 0; i < availableBooks.length; i++) {
+    console.log(`${availableBooks[i].title} by ${availableBooks[i].author}`);
+  }
 }
 
 function displayBorrowedBooks() {
-  books.filter((book) => !book.available).forEach((book) => console.log(`${book.title} by ${book.author}`));
+  for (let i = 0; i < books.length; i++) {
+    if (!books[i].available) {
+      console.log(`${books[i].title} by ${books[i].author}`);
+    }
+  }
 }
 
 function countTotalBooks() {

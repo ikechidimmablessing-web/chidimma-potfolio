@@ -2,10 +2,11 @@ const cart = [];
 const VAT_RATE = 0.075;
 
 function addItem(name, price, quantity = 1) {
-  const existingItem = cart.find((item) => item.name.toLowerCase() === name.toLowerCase());
-  if (existingItem) {
-    existingItem.quantity += quantity;
-    return existingItem;
+  for (let i = 0; i < cart.length; i++) {
+    if (cart[i].name.toLowerCase() === name.toLowerCase()) {
+      cart[i].quantity += quantity;
+      return cart[i];
+    }
   }
   const item = { name, price, quantity };
   cart.push(item);
@@ -13,26 +14,41 @@ function addItem(name, price, quantity = 1) {
 }
 
 function removeItem(name) {
-  const index = cart.findIndex((item) => item.name.toLowerCase() === name.toLowerCase());
-  return index === -1 ? null : cart.splice(index, 1)[0];
+  for (let i = 0; i < cart.length; i++) {
+    if (cart[i].name.toLowerCase() === name.toLowerCase()) {
+      return cart.splice(i, 1)[0];
+    }
+  }
+  return null;
 }
 
 function increaseQuantity(name, amount = 1) {
-  const item = cart.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
-  if (!item) return null;
-  item.quantity += amount;
-  return item;
+  for (let i = 0; i < cart.length; i++) {
+    if (cart[i].name.toLowerCase() === name.toLowerCase()) {
+      cart[i].quantity += amount;
+      return cart[i];
+    }
+  }
+  return null;
 }
 
 function decreaseQuantity(name, amount = 1) {
-  const item = cart.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
-  if (!item) return null;
-  item.quantity = Math.max(0, item.quantity - amount);
-  return item;
+  for (let i = 0; i < cart.length; i++) {
+    if (cart[i].name.toLowerCase() === name.toLowerCase()) {
+      cart[i].quantity -= amount;
+      if (cart[i].quantity < 0) cart[i].quantity = 0;
+      return cart[i];
+    }
+  }
+  return null;
 }
 
 function calculateSubtotal() {
-  return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  let subtotal = 0;
+  for (let i = 0; i < cart.length; i++) {
+    subtotal += cart[i].price * cart[i].quantity;
+  }
+  return subtotal;
 }
 
 function calculateVAT() {
@@ -44,7 +60,14 @@ function calculateTotal() {
 }
 
 function findMostExpensiveItem() {
-  return cart.reduce((mostExpensive, item) => item.price > mostExpensive.price ? item : mostExpensive, cart[0]) || null;
+  if (cart.length === 0) return null;
+  let mostExpensive = cart[0];
+  for (let i = 1; i < cart.length; i++) {
+    if (cart[i].price > mostExpensive.price) {
+      mostExpensive = cart[i];
+    }
+  }
+  return mostExpensive;
 }
 
 function formatCurrency(amount) {
@@ -53,7 +76,9 @@ function formatCurrency(amount) {
 
 function displayReceipt() {
   console.log('Shopping Receipt\n');
-  cart.forEach((item) => console.log(`${item.name} x${item.quantity} = ${formatCurrency(item.price * item.quantity)}`));
+  for (let i = 0; i < cart.length; i++) {
+    console.log(`${cart[i].name} x${cart[i].quantity} = ${formatCurrency(cart[i].price * cart[i].quantity)}`);
+  }
   console.log('\n-------------------');
   console.log(`Subtotal : ${formatCurrency(calculateSubtotal())}`);
   console.log(`VAT : ${formatCurrency(calculateVAT())}`);
